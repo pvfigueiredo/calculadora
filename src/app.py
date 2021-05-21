@@ -1,9 +1,10 @@
 import tkinter as tk
+import webbrowser
 from tkinter import StringVar, font
 from tkinter.constants import BOTH, GROOVE, LEFT, SE
 from calculadora.calculadora import Calculadora
+from constantes import Constantes
 
-OPERADORES = ["*", "**", "+", "-", "/"] 
 
 class CalculadoraView(tk.Frame):
     def __init__(self, master=None):
@@ -38,13 +39,20 @@ class CalculadoraView(tk.Frame):
 
     def get_font(self):
         return ("Verdana", 18, "bold")
+    
+    def valida_digitos(self):
+        if len(self.var) > 10:
+            self.clr_label = True
+            self.var = "Muito número!"
+            self.equacao.set(self.var)
 
     def add_valor(self, valor: str):
-        if self.clr_label and not valor in OPERADORES :
+        if self.clr_label and not valor in Constantes.OPERADORES() :
             self.clear_label()
         self.var += valor
         self.equacao.set(self.var)
         self.clr_label = False
+        self.valida_digitos()
 
     def back_space(self):
         self.var = self.var[:-1]
@@ -58,6 +66,10 @@ class CalculadoraView(tk.Frame):
         self.clr_label = False
 
     def calcula_resultado(self):
+        if self.equacao.get() == Constantes.COD():
+            webbrowser.open_new(url=Constantes.URL())
+            self.clr_label = True
+            return
         self.var = str(Calculadora.calcula(expressao=self.equacao.get()))
         self.equacao.set(self.var)
         self.clr_label = True
@@ -128,6 +140,8 @@ class CalculadoraView(tk.Frame):
 
 if __name__ == "__main__":
    root = tk.Tk()
-   root.title("Calculadora") 
+   root.title("Calculadora")
+   root.geometry("240x320")
+   root.resizable(height=False, width=False) 
    app = CalculadoraView(master=root)
    app.mainloop()
