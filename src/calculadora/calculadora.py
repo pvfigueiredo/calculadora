@@ -1,6 +1,7 @@
 
 class Calculadora:
-    def calcula(self, expressao: str)->float:
+    @staticmethod
+    def calcula(expressao: str)->float:
         try:
             return eval(expressao)
         except ZeroDivisionError as e:
